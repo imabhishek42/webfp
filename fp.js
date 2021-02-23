@@ -22,6 +22,57 @@ function R() {
     ]) >= 5
   );
 }
+
+Base64_code =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+
+var base64encode = function (str, utf8encode) {
+  utf8encode = typeof utf8encode == "undefined" ? false : utf8encode;
+  var o1,
+    o2,
+    o3,
+    bits,
+    h1,
+    h2,
+    h3,
+    h4,
+    e = [],
+    pad = "",
+    c,
+    plain,
+    coded;
+  var b64 = Base64_code;
+  plain = utf8encode ? Utf8.encode(str) : str;
+
+  c = plain.length % 3;
+  if (c > 0) {
+    while (c++ < 3) {
+      pad += "=";
+      plain += "\0";
+    }
+  }
+
+  for (c = 0; c < plain.length; c += 3) {
+    o1 = plain.charCodeAt(c);
+    o2 = plain.charCodeAt(c + 1);
+    o3 = plain.charCodeAt(c + 2);
+
+    bits = (o1 << 16) | (o2 << 8) | o3;
+
+    h1 = (bits >> 18) & 0x3f;
+    h2 = (bits >> 12) & 0x3f;
+    h3 = (bits >> 6) & 0x3f;
+    h4 = bits & 0x3f;
+
+    e[c / 3] =
+      b64.charAt(h1) + b64.charAt(h2) + b64.charAt(h3) + b64.charAt(h4);
+  }
+  coded = e.join("");
+  coded = coded.slice(0, coded.length - pad.length) + pad;
+
+  return coded;
+};
+
 function pF(e) {
   return parseFloat(e);
 }
@@ -298,5 +349,11 @@ var fp = [
 for (var i = 0; i < fp.length; i++) {
   s = s + G(fp[i]) + "|";
 }
+//console.log(s);
+var tem = base64encode(String("abhishek"));
+//console.log(tem);
+//var md5Hash = CryptoJS.MD5("Test");
+//var sha256Hash = CryptoJS.SHA256("Test1");
 
-console.log(s);
+//console.log(md5Hash.toString());
+//console.log(sha256Hash.toString());
